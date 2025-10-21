@@ -17,10 +17,13 @@ Drone Images → HLOC (SuperPoint + LightGlue) → COLMAP SfM → WebODM Visuali
 ## Docker Images
 | Image | Description |
 |-------|-------------|
-| \`project-hloc:hybrid\` | GPU-accelerated HLOC (PyTorch + LightGlue + COLMAP) |
-| \`project-webodm:latest\` | Modified WebODM with COLMAP ingestion |
-| \`opendronemap/nodeodm:gpu\` | WebODM GPU node for final reconstruction |
-
+| \project-hloc:hybrid\ | GPU-accelerated HLOC (PyTorch + LightGlue + COLMAP) |
+| \project-webodm:latest\ | Modified WebODM with COLMAP ingestion |
+| \opendronemap/nodeodm:gpu\ | WebODM GPU node for final reconstruction |
+```
+docker pull nick20350/ndvignation-hloc:hybrid
+docker pull nick20350/ndvignation-webodm:latest
+```
 ---
 
 ## Quick Start
