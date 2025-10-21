@@ -1,0 +1,26 @@
+# Build artifacts
+*.pyc
+__pycache__/
+*.log
+
+# Large data and model files
+*.h5
+*.pt
+*.tar.gz
+*.zip
+*.npz
+*.npy
+
+# Local output
+shared/
+images/
+hloc-gpu/shared/
+hloc-gpu/images/
+
+# Docker intermediate stuff
+*.bak
+*.tmp
+*.swp
+*.pid
+*.sock
+*.db

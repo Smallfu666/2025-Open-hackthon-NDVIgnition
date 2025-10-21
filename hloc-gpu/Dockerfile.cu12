@@ -1,0 +1,35 @@
+# hloc-gpu/Dockerfile.cu12
+FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# ---- 系統相依（含 pycolmap 3.x 需要的工具）----
+RUN apt-get update && apt-get install -y \
+    git wget unzip build-essential cmake \
+    python3 python3-pip python3-dev \
+    libgl1 libglib2.0-0 \
+    libeigen3-dev libceres-dev libsuitesparse-dev libatlas-base-dev \
+    libgoogle-glog-dev libgflags-dev libboost-all-dev \
+    colmap \
+ && rm -rf /var/lib/apt/lists/*
+
+# ---- PyTorch CUDA 12.4 ----
+RUN pip3 install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cu124 \
+    torch==2.4.0 torchvision==0.19.0
+
+# ---- 新版 HLOC + LightGlue + pycolmap ≥ 3.12.6 ----
+RUN pip3 install --no-cache-dir \
+    "pycolmap==3.12.6" \
+    git+https://github.com/cvg/LightGlue.git \
+    git+https://github.com/cvg/Hierarchical-Localization@main
+
+WORKDIR /workspace
+RUN mkdir -p /shared /workspace/scripts
+VOLUME ["/shared", "/images"]
+
+# 你的腳本會用 docker-compose 的 volume 掛進來；備份一份以防沒掛到
+COPY ../scripts/hloc_run.py /workspace/scripts/hloc_run.py
+
+ENTRYPOINT ["python3", "/workspace/scripts/hloc_run.py"]

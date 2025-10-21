@@ -1,0 +1,29 @@
+services:
+  hloc:
+    build:
+      context: .
+      dockerfile: hloc-gpu/Dockerfile.cu12
+    runtime: nvidia
+    environment:
+    - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+    - ./shared:/shared
+    - ./images:/images:ro
+    - ./scripts:/workspace/scripts:ro
+    command:
+    - --images
+    - /images
+    - --out
+    - /shared/run_001
+    - --batch-size
+    - '8'
+  webodm:
+    build: ./WebODM
+    ports:
+    - 8000:8000
+    volumes:
+    - ./shared:/shared
+    - ./scripts:/scripts:ro
+    - webodm_media:/webodm/app/media
+volumes:
+  webodm_media: null

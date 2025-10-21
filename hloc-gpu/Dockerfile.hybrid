@@ -1,0 +1,25 @@
+# --- 以官方 HLOC 映像為基底（假設你已 docker build -t hloc:latest . 於官方 repo 目錄）---
+FROM hloc:latest
+
+# ---- 環境設定 ----
+ENV PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    FORCE_CUDA=1
+
+# ----（可選）補一些你慣用的工具與 COLMAP CLI（pycolmap 已在基底，非必需）----
+# 需要 CLI 工具或想測 log 的話再打開
+# RUN apt-get update && apt-get install -y colmap && rm -rf /var/lib/apt/lists/*
+
+# ---- 工作目錄與 Volume ----
+WORKDIR /workspace
+RUN mkdir -p /workspace/scripts /images /shared
+RUN pip install -e /app
+VOLUME ["/images", "/shared"]
+
+# ---- 放你的 pipeline 腳本（新版 HLOC API 版）----
+# 你已經有 scripts/hloc_run.py，就掛 volume；但保留一份進 image 以防未掛載
+COPY ../scripts/hloc_run.py /workspace/scripts/hloc_run.py
+
+# ---- 預設進入點：直接跑你的 hloc 管線（可被 docker compose 覆蓋）----
+ENTRYPOINT ["python3", "/workspace/scripts/hloc_run.py"]
+
